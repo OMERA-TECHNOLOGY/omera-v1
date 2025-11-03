@@ -156,6 +156,30 @@ const projects: Project[] = [
     githubUrl: "https://github.com/yourusername/kereyu-hotel",
     projectType: "landing-page",
   },
+  {
+    title: "Ayu Hotel",
+    description:
+      "Modern boutique hotel website with elegant design, seamless booking experience, and integrated customer review system.",
+    category: "Boutique Hotel Landing",
+    technologies: ["Next.js", "TypeScript", "Tailwind", "Framer Motion"],
+    gradient: "from-purple-500 via-pink-600 to-rose-700",
+    darkGradient: "from-purple-600 via-pink-700 to-rose-800",
+    stats: {
+      users: "8K+",
+      performance: "99.7%",
+      rating: "4.7",
+      growth: "120%",
+    },
+    image: "/images/ayu-hotel.jpg",
+    results: [
+      "Increased online bookings by 60%",
+      "Improved user engagement by 40%",
+      "Enhanced brand visibility by 55%",
+    ],
+    liveUrl: "https://ayuhotel.omera.tech",
+    githubUrl: "https://github.com/yourusername/ayu-hotel",
+    projectType: "landing-page",
+  },
 ];
 
 const containerVariants = {
