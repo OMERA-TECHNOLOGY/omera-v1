@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -74,31 +79,44 @@ export default {
         },
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" }
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "slide-up": {
           "0%": { opacity: "0", transform: "translateY(30px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" }
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "slide-left": {
           "0%": { opacity: "0", transform: "translateX(30px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" }
+          "100%": { opacity: "1", transform: "translateX(0)" },
         },
         "scale-in": {
           "0%": { opacity: "0", transform: "scale(0.95)" },
-          "100%": { opacity: "1", transform: "scale(1)" }
+          "100%": { opacity: "1", transform: "scale(1)" },
         },
         "glow-pulse": {
           "0%, 100%": { boxShadow: "0 0 20px hsl(var(--accent) / 0.3)" },
-          "50%": { boxShadow: "0 0 40px hsl(var(--accent) / 0.6)" }
+          "50%": { boxShadow: "0 0 40px hsl(var(--accent) / 0.6)" },
         },
         "gradient-shift": {
           "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" }
+          "50%": { backgroundPosition: "100% 50%" },
         },
-        "float": {
+        float: {
           "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-20px)" }
+          "50%": { transform: "translateY(-20px)" },
+        },
+        // ADD THESE FIXED ANIMATIONS:
+        "pulse-slow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.7" },
+        },
+        "ping-slow": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "100%": { transform: "scale(2)", opacity: "0" },
+        },
+        "float-rotate": {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-20px) rotate(5deg)" },
         },
       },
       animation: {
@@ -110,7 +128,11 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "gradient-shift": "gradient-shift 8s ease infinite",
-        "float": "float 6s ease-in-out infinite",
+        float: "float 6s ease-in-out infinite",
+        // ADD THESE:
+        "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "ping-slow": "ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "float-rotate": "float-rotate 6s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
