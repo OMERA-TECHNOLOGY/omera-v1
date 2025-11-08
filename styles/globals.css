@@ -96,17 +96,36 @@
     --glass-border: hsla(214 72% 13% / 0.1);
   }
 
-  /* Apply border color using CSS variable */
-  * {
+  /* Utilities for Tailwind v4 CSS-first */
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  .text-foreground {
+    color: hsl(var(--foreground));
+  }
+  .border-border {
     border-color: hsl(var(--border));
   }
-
-  body {
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: Inter, system-ui, sans-serif;
-    cursor: none;
+  .bg-card {
+    background-color: hsl(var(--card));
   }
+  .text-card-foreground {
+    color: hsl(var(--card-foreground));
+  }
+  .bg-accent {
+    background-color: hsl(var(--accent));
+  }
+  .text-accent {
+    color: hsl(var(--accent-foreground));
+  }
+}
+
+/* Global body styles */
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: Inter, system-ui, sans-serif;
+  cursor: none;
 }
 
 /* Glass Morphism */
@@ -140,7 +159,6 @@
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--accent));
   border-radius: 4px;
