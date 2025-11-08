@@ -1,3 +1,5 @@
+"use client";
+
 import { Target, Briefcase, Users, MessageSquare } from "lucide-react";
 import { CanvasRevealEffect } from "../ui/CanvasRevealEffect";
 import { AnimatePresence, motion } from "motion/react";

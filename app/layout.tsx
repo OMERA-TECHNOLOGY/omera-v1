@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import NavBar from "@/components/sections/NavBar";
-import Footer from "@/components/sections/Footer";
-import Providers from "@/app/providers";
+import { Footer } from "@/components/sections/Footer";
+import Providers from "@/app/provider";
 
 export const metadata = {
   title: "OMERA Technology",
