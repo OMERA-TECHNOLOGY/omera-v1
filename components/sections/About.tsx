@@ -1,13 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Cpu,
-  Palette,
-  Zap,
   Rocket,
   Award,
   Clock,
@@ -16,14 +13,13 @@ import {
   Target,
   Users,
   Globe,
-  Code,
-  Shield,
-  Sparkles,
-  Cloud,
+  Palette,
   Smartphone,
   Server,
   Eye,
   Brain,
+  Cloud,
+  Zap,
 } from "lucide-react";
 
 // Tech Icons
@@ -83,7 +79,7 @@ const FloatingServiceIcon = ({
   return (
     <button
       onClick={onClick}
-      className={`absolute transform transition-all duration-700 cursor-pointer group ${
+      className={`absolute transform-gpu will-change-transform transition-all duration-700 cursor-pointer group ${
         isActive ? "scale-150 z-50 shadow-2xl" : "hover:scale-110 z-30"
       } ${isFloating && !isActive ? "translate-y-[-8px]" : "translate-y-0"}`}
       style={{
@@ -93,24 +89,24 @@ const FloatingServiceIcon = ({
     >
       <div
         className={`
-        relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-2xl 
-        transition-all duration-500 transform group-hover:rotate-12
-        ${
-          isActive
-            ? "bg-gradient-to-br from-accent to-accent/70 scale-110 shadow-accent/50"
-            : "bg-gradient-to-br from-card to-card/80 border border-border/50 shadow-lg hover:shadow-xl"
-        }
-      `}
+          relative w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shadow-2xl
+          transform-gpu will-change-transform transition-all duration-500 group-hover:rotate-12
+          ${
+            isActive
+              ? "bg-gradient-to-br from-accent to-accent/70 scale-110 shadow-accent/50"
+              : "bg-gradient-to-br from-card to-card/80 border border-border/50 shadow-lg hover:shadow-xl"
+          }
+        `}
       >
         <div
           className={`
-          text-lg sm:text-xl transition-all duration-500
-          ${
-            isActive
-              ? "text-white scale-110"
-              : "text-accent group-hover:text-accent/80"
-          }
-        `}
+            text-lg sm:text-xl transition-all duration-500
+            ${
+              isActive
+                ? "text-white scale-110"
+                : "text-accent group-hover:text-accent/80"
+            }
+          `}
         >
           {service.icon}
         </div>
@@ -126,11 +122,11 @@ const FloatingServiceIcon = ({
         {/* Tooltip */}
         <div
           className={`
-          absolute bottom-full mb-2 sm:mb-3 left-1/2 transform -translate-x-1/2 
-          px-2 sm:px-3 py-1 sm:py-2 bg-foreground text-background rounded-lg text-xs sm:text-sm font-semibold
-          whitespace-nowrap transition-all duration-300 opacity-0 group-hover:opacity-100
-          ${isActive ? "opacity-100" : ""}
-        `}
+            absolute bottom-full mb-2 sm:mb-3 left-1/2 transform -translate-x-1/2
+            px-2 sm:px-3 py-1 sm:py-2 bg-foreground text-background rounded-lg text-xs sm:text-sm font-semibold
+            whitespace-nowrap transition-all duration-300 opacity-0 group-hover:opacity-100
+            ${isActive ? "opacity-100" : ""}
+          `}
         >
           {service.title}
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-foreground"></div>
@@ -150,15 +146,15 @@ const ServiceCard = ({
   return (
     <Card
       className={`
-      relative bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-xl 
-      border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden 
-      transition-all duration-700 transform w-full max-w-2xl lg:max-w-4xl mx-auto
-      ${
-        isActive
-          ? "opacity-100 scale-100 translate-y-0 shadow-2xl shadow-accent/10 h-auto mt-4"
-          : "opacity-0 scale-95 translate-y-8 pointer-events-none absolute h-0"
-      }
-    `}
+        relative bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-xl
+        border border-border/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 overflow-hidden
+        transition-all duration-700 transform w-full max-w-2xl lg:max-w-4xl mx-auto
+        ${
+          isActive
+            ? "opacity-100 scale-100 translate-y-0 shadow-2xl shadow-accent/10 h-auto mt-4"
+            : "opacity-0 scale-95 translate-y-8 pointer-events-none absolute h-0"
+        }
+      `}
     >
       {/* Animated Background */}
       <div
@@ -183,9 +179,9 @@ const ServiceCard = ({
         <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
           <div
             className={`
-            w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center 
-            bg-gradient-to-br from-accent to-accent/70 shadow-lg flex-shrink-0
-          `}
+              w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center
+              bg-gradient-to-br from-accent to-accent/70 shadow-lg flex-shrink-0
+            `}
           >
             <div className="text-white text-lg sm:text-xl lg:text-2xl">
               {service.icon}
@@ -296,176 +292,201 @@ const ZigzagButton = ({
   );
 };
 
+const SERVICES: Service[] = [
+  {
+    id: "frontend",
+    title: "Frontend",
+    description:
+      "Pixel-perfect, performant user interfaces with immersive animations and flawless user experiences that captivate and convert.",
+    icon: <Palette className="w-3 h-3 sm:w-4 sm:h-4" />,
+    gradient: "from-purple-500 via-pink-600 to-rose-700",
+    features: [
+      "Interactive animations & micro-interactions",
+      "Responsive design systems",
+      "Performance optimization",
+      "Progressive Web Apps",
+    ],
+    tech: [
+      { icon: <SiReact className="text-cyan-400" />, name: "React" },
+      {
+        icon: <SiTypescript className="text-blue-600" />,
+        name: "TypeScript",
+      },
+      { icon: <SiTailwindcss className="text-cyan-300" />, name: "Tailwind" },
+      { icon: <SiFramer className="text-pink-500" />, name: "Framer" },
+    ],
+    stats: [
+      { value: "<2s", label: "Load Time" },
+      { value: "90+", label: "Lighthouse" },
+      { value: "60%", label: "Faster" },
+      { value: "100%", label: "Responsive" },
+    ],
+    position: { top: "15%", left: "10%" },
+    buttonPosition: { top: "25%", left: "5%" },
+  },
+  {
+    id: "backend",
+    title: "Backend",
+    description:
+      "Robust, scalable backend infrastructure engineered for performance, reliability, and seamless integration with modern technologies.",
+    icon: <Server className="w-3 h-3 sm:w-4 sm:h-4" />,
+    gradient: "from-blue-500 via-cyan-600 to-sky-700",
+    features: [
+      "Microservices architecture",
+      "Real-time systems",
+      "Database optimization",
+      "API development",
+    ],
+    tech: [
+      { icon: <SiNodedotjs className="text-green-500" />, name: "Node.js" },
+      {
+        icon: <SiPostgresql className="text-blue-400" />,
+        name: "PostgreSQL",
+      },
+      { icon: <SiMongodb className="text-green-500" />, name: "MongoDB" },
+      { icon: <SiRedis className="text-red-500" />, name: "Redis" },
+    ],
+    stats: [
+      { value: "10M+", label: "Requests/Day" },
+      { value: "<100ms", label: "Response" },
+      { value: "99.9%", label: "Uptime" },
+      { value: "Zero", label: "Data Loss" },
+    ],
+    position: { top: "55%", left: "20%" },
+    buttonPosition: { top: "65%", left: "15%" },
+  },
+  {
+    id: "mobile",
+    title: "Mobile",
+    description:
+      "Native and cross-platform mobile applications that deliver exceptional performance and seamless user experiences across all devices.",
+    icon: <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />,
+    gradient: "from-green-500 via-emerald-600 to-teal-700",
+    features: [
+      "React Native development",
+      "Native iOS & Android",
+      "Mobile UI/UX design",
+      "App store deployment",
+    ],
+    tech: [
+      { icon: <SiReact className="text-cyan-400" />, name: "React Native" },
+      {
+        icon: <SiTypescript className="text-blue-600" />,
+        name: "TypeScript",
+      },
+      { icon: <SiPython className="text-yellow-500" />, name: "Python" },
+      { icon: <SiFastapi className="text-teal-500" />, name: "FastAPI" },
+    ],
+    stats: [
+      { value: "4.8+", label: "App Store" },
+      { value: "60%", label: "Faster Dev" },
+      { value: "95%", label: "Code Share" },
+      { value: "1M+", label: "Downloads" },
+    ],
+    position: { top: "25%", left: "75%" },
+    buttonPosition: { top: "35%", left: "70%" },
+  },
+  {
+    id: "cloud",
+    title: "Cloud",
+    description:
+      "Enterprise-grade cloud infrastructure, deployment pipelines, and monitoring systems that ensure reliability and scalability at any level.",
+    icon: <Cloud className="w-3 h-3 sm:w-4 sm:h-4" />,
+    gradient: "from-orange-500 via-red-600 to-amber-700",
+    features: [
+      "CI/CD pipeline automation",
+      "Container orchestration",
+      "Cloud architecture",
+      "Monitoring & security",
+    ],
+    tech: [
+      { icon: <FaAws className="text-orange-400" />, name: "AWS" },
+      { icon: <SiDocker className="text-blue-400" />, name: "Docker" },
+      {
+        icon: <SiKubernetes className="text-blue-500" />,
+        name: "Kubernetes",
+      },
+      {
+        icon: <SiGooglecloud className="text-red-400" />,
+        name: "Google Cloud",
+      },
+    ],
+    stats: [
+      { value: "Zero", label: "Downtime" },
+      { value: "24/7", label: "Monitoring" },
+      { value: "Auto", label: "Scaling" },
+      { value: "99.95%", label: "SLA" },
+    ],
+    position: { top: "65%", left: "70%" },
+    buttonPosition: { top: "75%", left: "65%" },
+  },
+  {
+    id: "ai",
+    title: "AI/ML",
+    description:
+      "Intelligent solutions powered by cutting-edge artificial intelligence and machine learning algorithms that transform data into actionable insights.",
+    icon: <Brain className="w-3 h-3 sm:w-4 sm:h-4" />,
+    gradient: "from-indigo-500 via-purple-600 to-violet-700",
+    features: [
+      "Machine learning models",
+      "Natural language processing",
+      "Computer vision",
+      "Predictive analytics",
+    ],
+    tech: [
+      { icon: <SiPython className="text-yellow-500" />, name: "Python" },
+      {
+        icon: <div className="text-orange-500 text-xs font-bold">TF</div>,
+        name: "TensorFlow",
+      },
+      {
+        icon: <div className="text-red-500 text-xs font-bold">PT</div>,
+        name: "PyTorch",
+      },
+      {
+        icon: <div className="text-green-500 text-xs font-bold">CV</div>,
+        name: "OpenCV",
+      },
+    ],
+    stats: [
+      { value: "95%", label: "Accuracy" },
+      { value: "10x", label: "Efficiency" },
+      { value: "Real", label: "Time" },
+      { value: "Custom", label: "Models" },
+    ],
+    position: { top: "40%", left: "45%" },
+    buttonPosition: { top: "50%", left: "40%" },
+  },
+];
+
+// Define the sequential order of services for the tracking line
+const SERVICE_ORDER = ["frontend", "backend", "ai", "cloud", "mobile"]; // Corrected order
+
+// Helper to get element dimensions for positioning offsets
+const BUTTON_WIDTH = 120; // Approx. width of zigzag button in pixels (adjust as needed for responsive)
+BUTTON_WIDTH;
+const BUTTON_HEIGHT = 40; // Approx. height of zigzag button
+const ICON_SIZE = 64; // Approx. size of FloatingServiceIcon
+
 export const About = () => {
   const [activeService, setActiveService] = useState<string>("frontend");
+  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const containerRef = useCallback((node: HTMLDivElement) => {
+    if (node !== null) {
+      const observer = new ResizeObserver(() => {
+        setContainerSize({
+          width: node.offsetWidth,
+          height: node.offsetHeight,
+        });
+      });
+      observer.observe(node);
+      return () => observer.disconnect();
+    }
+  }, []);
 
-  const services: Service[] = [
-    {
-      id: "frontend",
-      title: "Frontend",
-      description:
-        "Pixel-perfect, performant user interfaces with immersive animations and flawless user experiences that captivate and convert.",
-      icon: <Palette className="w-3 h-3 sm:w-4 sm:h-4" />,
-      gradient: "from-purple-500 via-pink-600 to-rose-700",
-      features: [
-        "Interactive animations & micro-interactions",
-        "Responsive design systems",
-        "Performance optimization",
-        "Progressive Web Apps",
-      ],
-      tech: [
-        { icon: <SiReact className="text-cyan-400" />, name: "React" },
-        {
-          icon: <SiTypescript className="text-blue-600" />,
-          name: "TypeScript",
-        },
-        { icon: <SiTailwindcss className="text-cyan-300" />, name: "Tailwind" },
-        { icon: <SiFramer className="text-pink-500" />, name: "Framer" },
-      ],
-      stats: [
-        { value: "<2s", label: "Load Time" },
-        { value: "90+", label: "Lighthouse" },
-        { value: "60%", label: "Faster" },
-        { value: "100%", label: "Responsive" },
-      ],
-      position: { top: "15%", left: "10%" },
-      buttonPosition: { top: "25%", left: "5%" },
-    },
-    {
-      id: "backend",
-      title: "Backend",
-      description:
-        "Robust, scalable backend infrastructure engineered for performance, reliability, and seamless integration with modern technologies.",
-      icon: <Server className="w-3 h-3 sm:w-4 sm:h-4" />,
-      gradient: "from-blue-500 via-cyan-600 to-sky-700",
-      features: [
-        "Microservices architecture",
-        "Real-time systems",
-        "Database optimization",
-        "API development",
-      ],
-      tech: [
-        { icon: <SiNodedotjs className="text-green-500" />, name: "Node.js" },
-        {
-          icon: <SiPostgresql className="text-blue-400" />,
-          name: "PostgreSQL",
-        },
-        { icon: <SiMongodb className="text-green-500" />, name: "MongoDB" },
-        { icon: <SiRedis className="text-red-500" />, name: "Redis" },
-      ],
-      stats: [
-        { value: "10M+", label: "Requests/Day" },
-        { value: "<100ms", label: "Response" },
-        { value: "99.9%", label: "Uptime" },
-        { value: "Zero", label: "Data Loss" },
-      ],
-      position: { top: "55%", left: "20%" },
-      buttonPosition: { top: "65%", left: "15%" },
-    },
-    {
-      id: "mobile",
-      title: "Mobile",
-      description:
-        "Native and cross-platform mobile applications that deliver exceptional performance and seamless user experiences across all devices.",
-      icon: <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />,
-      gradient: "from-green-500 via-emerald-600 to-teal-700",
-      features: [
-        "React Native development",
-        "Native iOS & Android",
-        "Mobile UI/UX design",
-        "App store deployment",
-      ],
-      tech: [
-        { icon: <SiReact className="text-cyan-400" />, name: "React Native" },
-        {
-          icon: <SiTypescript className="text-blue-600" />,
-          name: "TypeScript",
-        },
-        { icon: <SiPython className="text-yellow-500" />, name: "Python" },
-        { icon: <SiFastapi className="text-teal-500" />, name: "FastAPI" },
-      ],
-      stats: [
-        { value: "4.8+", label: "App Store" },
-        { value: "60%", label: "Faster Dev" },
-        { value: "95%", label: "Code Share" },
-        { value: "1M+", label: "Downloads" },
-      ],
-      position: { top: "25%", left: "75%" },
-      buttonPosition: { top: "35%", left: "70%" },
-    },
-    {
-      id: "cloud",
-      title: "Cloud",
-      description:
-        "Enterprise-grade cloud infrastructure, deployment pipelines, and monitoring systems that ensure reliability and scalability at any level.",
-      icon: <Cloud className="w-3 h-3 sm:w-4 sm:h-4" />,
-      gradient: "from-orange-500 via-red-600 to-amber-700",
-      features: [
-        "CI/CD pipeline automation",
-        "Container orchestration",
-        "Cloud architecture",
-        "Monitoring & security",
-      ],
-      tech: [
-        { icon: <FaAws className="text-orange-400" />, name: "AWS" },
-        { icon: <SiDocker className="text-blue-400" />, name: "Docker" },
-        {
-          icon: <SiKubernetes className="text-blue-500" />,
-          name: "Kubernetes",
-        },
-        {
-          icon: <SiGooglecloud className="text-red-400" />,
-          name: "Google Cloud",
-        },
-      ],
-      stats: [
-        { value: "Zero", label: "Downtime" },
-        { value: "24/7", label: "Monitoring" },
-        { value: "Auto", label: "Scaling" },
-        { value: "99.95%", label: "SLA" },
-      ],
-      position: { top: "65%", left: "70%" },
-      buttonPosition: { top: "75%", left: "65%" },
-    },
-    {
-      id: "ai",
-      title: "AI/ML",
-      description:
-        "Intelligent solutions powered by cutting-edge artificial intelligence and machine learning algorithms that transform data into actionable insights.",
-      icon: <Brain className="w-3 h-3 sm:w-4 sm:h-4" />,
-      gradient: "from-indigo-500 via-purple-600 to-violet-700",
-      features: [
-        "Machine learning models",
-        "Natural language processing",
-        "Computer vision",
-        "Predictive analytics",
-      ],
-      tech: [
-        { icon: <SiPython className="text-yellow-500" />, name: "Python" },
-        {
-          icon: <div className="text-orange-500 text-xs font-bold">TF</div>,
-          name: "TensorFlow",
-        },
-        {
-          icon: <div className="text-red-500 text-xs font-bold">PT</div>,
-          name: "PyTorch",
-        },
-        {
-          icon: <div className="text-green-500 text-xs font-bold">CV</div>,
-          name: "OpenCV",
-        },
-      ],
-      stats: [
-        { value: "95%", label: "Accuracy" },
-        { value: "10x", label: "Efficiency" },
-        { value: "Real", label: "Time" },
-        { value: "Custom", label: "Models" },
-      ],
-      position: { top: "40%", left: "45%" },
-      buttonPosition: { top: "50%", left: "40%" },
-    },
-  ];
+  const pathRef = useRef<SVGPathElement>(null); // Ref to measure path length
 
+  const services = SERVICES;
   const stats = [
     {
       icon: <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />,
@@ -510,6 +531,144 @@ export const About = () => {
       gradient: "from-indigo-500 to-purple-600",
     },
   ];
+
+  const serviceCards = useMemo(() => {
+    return services.map((service) => (
+      <ServiceCard
+        key={service.id}
+        service={service}
+        isActive={activeService === service.id}
+      />
+    ));
+  }, [activeService, services]);
+
+  // Helper function to get pixel coordinates from percentage strings
+  const getCoords = useCallback(
+    (position: { top: string; left: string }, isButton: boolean) => {
+      if (!containerSize.width || !containerSize.height) return { x: 0, y: 0 };
+
+      const leftPx = (parseFloat(position.left) / 100) * containerSize.width;
+      const topPx = (parseFloat(position.top) / 100) * containerSize.height;
+
+      // Adjust for the center of the element
+      const offsetX = isButton ? BUTTON_WIDTH / 2 : ICON_SIZE / 2;
+      const offsetY = isButton ? BUTTON_HEIGHT / 2 : ICON_SIZE / 2;
+
+      return { x: leftPx + offsetX, y: topPx + offsetY };
+    },
+    [containerSize]
+  );
+
+  // Generate the SVG path for the sequential tracking line
+  const trackingPathD = useMemo(() => {
+    if (!containerSize.width || !containerSize.height) return "";
+
+    let path = "";
+    SERVICE_ORDER.forEach((serviceId, index) => {
+      const service = SERVICES.find((s) => s.id === serviceId);
+      if (!service) return;
+
+      const buttonCoords = getCoords(service.buttonPosition, true);
+      const iconCoords = getCoords(service.position, false);
+
+      if (index === 0) {
+        // Start from the first button's center
+        path += `M ${buttonCoords.x} ${buttonCoords.y}`;
+      } else {
+        // Connect from the previous icon to the current button
+        const prevServiceId = SERVICE_ORDER[index - 1];
+        const prevService = SERVICES.find((s) => s.id === prevServiceId);
+        if (prevService) {
+          const prevIconCoords = getCoords(prevService.position, false);
+
+          // Use a smooth quadratic bezier curve for "signal-like" effect
+          const midX = (prevIconCoords.x + buttonCoords.x) / 2;
+          const midY = (prevIconCoords.y + buttonCoords.y) / 2;
+          // Control point for the curve, adjusting based on direction for zigzag
+          const controlX =
+            midX + (prevIconCoords.y < buttonCoords.y ? -50 : 50); // Shift X based on Y difference
+          const controlY =
+            midY + (prevIconCoords.x < buttonCoords.x ? 50 : -50); // Shift Y based on X difference
+
+          path += ` Q ${controlX} ${controlY} ${buttonCoords.x} ${buttonCoords.y}`;
+        }
+      }
+
+      // Connect from the current button to its icon
+      // Using a cubic bezier for a smoother, more direct link from button to its own icon
+      path += ` C ${buttonCoords.x},${buttonCoords.y} ${iconCoords.x},${buttonCoords.y} ${iconCoords.x},${iconCoords.y}`;
+    });
+
+    return path;
+  }, [containerSize, getCoords]);
+
+  const [fullPathLength, setFullPathLength] = useState(0);
+  const [activePathLength, setActivePathLength] = useState(0);
+
+  useEffect(() => {
+    if (pathRef.current) {
+      setFullPathLength(pathRef.current.getTotalLength());
+    }
+  }, [trackingPathD]); // Recalculate full path length when the path changes
+
+  useEffect(() => {
+    if (!containerSize.width || !containerSize.height || !pathRef.current) {
+      setActivePathLength(0);
+      return;
+    }
+
+    let tempPathD = "";
+    const activeIndex = SERVICE_ORDER.indexOf(activeService);
+
+    if (activeIndex === -1) {
+      setActivePathLength(0);
+      return;
+    }
+
+    for (let i = 0; i <= activeIndex; i++) {
+      const serviceId = SERVICE_ORDER[i];
+      const service = SERVICES.find((s) => s.id === serviceId);
+      if (!service) continue;
+
+      const buttonCoords = getCoords(service.buttonPosition, true);
+      const iconCoords = getCoords(service.position, false);
+
+      if (i === 0) {
+        tempPathD += `M ${buttonCoords.x} ${buttonCoords.y}`;
+      } else {
+        const prevServiceId = SERVICE_ORDER[i - 1];
+        const prevService = SERVICES.find((s) => s.id === prevServiceId);
+        if (prevService) {
+          const prevIconCoords = getCoords(prevService.position, false);
+
+          const midX = (prevIconCoords.x + buttonCoords.x) / 2;
+          const midY = (prevIconCoords.y + buttonCoords.y) / 2;
+          const controlX =
+            midX + (prevIconCoords.y < buttonCoords.y ? -50 : 50);
+          const controlY =
+            midY + (prevIconCoords.x < buttonCoords.x ? 50 : -50);
+
+          tempPathD += ` Q ${controlX} ${controlY} ${buttonCoords.x} ${buttonCoords.y}`;
+        }
+      }
+      tempPathD += ` C ${buttonCoords.x},${buttonCoords.y} ${iconCoords.x},${buttonCoords.y} ${iconCoords.x},${iconCoords.y}`;
+    }
+
+    // Create a temporary SVG path to measure the length
+    const tempSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    const tempPathElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    tempPathElement.setAttribute("d", tempPathD);
+    tempSvg.appendChild(tempPathElement);
+    document.body.appendChild(tempSvg); // Temporarily append to DOM to get length
+    setActivePathLength(tempPathElement.getTotalLength());
+    document.body.removeChild(tempSvg); // Remove after measuring
+  }, [activeService, containerSize, getCoords]); // Recalculate active path length when active service or container size changes
 
   return (
     <section
@@ -590,71 +749,106 @@ export const About = () => {
             </p>
           </div>
 
-          {/* Interactive Service Selector */}
-          <div className="relative w-full max-w-4xl lg:max-w-6xl mx-auto h-48 sm:h-64 lg:h-80 mb-8 sm:mb-12 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gradient-to-br from-background/50 to-background/20 border border-border/30 backdrop-blur-sm overflow-visible">
-            {/* Floating Service Icons */}
-            {services.map((service) => (
-              <FloatingServiceIcon
-                key={service.id}
-                service={service}
-                isActive={activeService === service.id}
-                onClick={() => setActiveService(service.id)}
-              />
-            ))}
-
-            {/* Zigzag Buttons */}
-            {services.map((service) => (
-              <ZigzagButton
-                key={service.id}
-                service={service}
-                isActive={activeService === service.id}
-                onClick={() => setActiveService(service.id)}
-              />
-            ))}
-
-            {/* Connection Lines - Smooth Zigzag */}
-            <div className="absolute inset-0 pointer-events-none">
-              <svg className="w-full h-full">
-                {services.map((service) => (
+          {/* Desktop Layout */}
+          <div className="hidden lg:block">
+            {/* Interactive Service Selector */}
+            <div
+              ref={containerRef}
+              className="relative w-full max-w-4xl lg:max-w-6xl mx-auto h-48 sm:h-64 lg:h-80 mb-8 sm:mb-12 rounded-xl sm:rounded-2xl lg:rounded-3xl bg-gradient-to-br from-background/50 to-background/20 border border-border/30 backdrop-blur-sm overflow-visible"
+            >
+              {/* Sequential Tracking Line */}
+              <div className="absolute inset-0 pointer-events-none">
+                <svg
+                  className="w-full h-full"
+                  viewBox={`0 0 ${containerSize.width} ${containerSize.height}`}
+                  preserveAspectRatio="none"
+                >
+                  {/* Base subtle line connecting all buttons */}
                   <path
-                    key={service.id}
-                    d={`M ${parseInt(service.buttonPosition.left) + 20} ${
-                      parseInt(service.buttonPosition.top) + 12
-                    } 
-                        Q ${
-                          (parseInt(service.buttonPosition.left) +
-                            parseInt(service.position.left)) /
-                          2
-                        } ${
-                      (parseInt(service.buttonPosition.top) +
-                        parseInt(service.position.top)) /
-                        2 -
-                      20
-                    }
-                        ${parseInt(service.position.left) + 24} ${
-                      parseInt(service.position.top) + 24
-                    }`}
+                    ref={pathRef} // Attach ref here for full path length
+                    d={trackingPathD}
                     stroke="hsl(var(--border))"
                     strokeWidth="1"
                     strokeDasharray="4 4"
                     fill="none"
-                    opacity={activeService === service.id ? 0.4 : 0.15}
-                    className="transition-all duration-500"
+                    opacity="0.3"
                   />
-                ))}
-              </svg>
+
+                  {/* Active tracking line - highlights up to the current service */}
+                  <path
+                    d={trackingPathD}
+                    stroke="hsl(var(--accent))"
+                    strokeWidth="2"
+                    fill="none"
+                    opacity="0.8"
+                    className="transition-[stroke-dashoffset] duration-700 ease-out"
+                    strokeDasharray={fullPathLength}
+                    strokeDashoffset={fullPathLength - activePathLength}
+                  />
+                </svg>
+              </div>
+
+              {/* Floating Service Icons */}
+              {services.map((service) => (
+                <FloatingServiceIcon
+                  key={service.id}
+                  service={service}
+                  isActive={activeService === service.id}
+                  onClick={() => setActiveService(service.id)}
+                />
+              ))}
+
+              {/* Zigzag Buttons */}
+              {services.map((service) => (
+                <ZigzagButton
+                  key={service.id}
+                  service={service}
+                  isActive={activeService === service.id}
+                  onClick={() => setActiveService(service.id)}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Service Details Card - Separate from buttons */}
+          {/* Mobile Layout */}
+          <div className="lg:hidden">
+            <div className="relative w-full max-w-md mx-auto mb-8">
+              {/* Vertical Service Buttons */}
+              <div className="flex flex-col gap-4">
+                {services.map((service) => (
+                  <Button
+                    key={service.id}
+                    onClick={() => setActiveService(service.id)}
+                    className={`
+                      w-full justify-start py-4 px-6 text-left transition-all duration-300
+                      ${
+                        activeService === service.id
+                          ? "bg-accent hover:bg-accent/90 text-primary scale-105 shadow-2xl shadow-accent/30"
+                          : "bg-card/80 hover:bg-card text-foreground border border-border/50 backdrop-blur-xl"
+                      }
+                    `}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`p-2 rounded-lg ${
+                          activeService === service.id
+                            ? "bg-primary/20"
+                            : "bg-accent/10"
+                        }`}
+                      >
+                        {service.icon}
+                      </div>
+                      <span className="font-semibold">{service.title}</span>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Service Details Card - Same for both layouts */}
           <div className="w-full max-w-2xl lg:max-w-4xl mx-auto px-2">
-            {services.map((service) => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                isActive={activeService === service.id}
-              />
-            ))}
+            {serviceCards}
           </div>
 
           {/* Service Navigation Dots */}

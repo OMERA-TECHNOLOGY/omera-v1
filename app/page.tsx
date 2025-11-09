@@ -1,6 +1,7 @@
 import { CustomCursor } from "@/components/CustomCursor";
 import NavBar from "@/components/sections/NavBar";
 import { Hero } from "@/components/sections/Hero";
+import { About } from "@/components/sections/About";
 
 const Index = () => {
   return (
@@ -8,6 +9,7 @@ const Index = () => {
       <CustomCursor />
       <NavBar />
       <Hero />
+      <About />
     </div>
   );
 };
