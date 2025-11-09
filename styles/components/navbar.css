@@ -1,0 +1,34 @@
+/* Navbar specific styles */
+.glass-morph {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.cursor-hover {
+  cursor: pointer;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+/* Navbar animations */
+@keyframes navSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-entrance {
+  animation: navSlideIn 0.6s ease-out;
+}

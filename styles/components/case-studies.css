@@ -1,0 +1,106 @@
+/* Case Studies specific styles */
+.case-studies-section .bg-accent-10 {
+  background-color: hsl(var(--accent) / 0.1);
+}
+
+.case-studies-section .border-accent-20 {
+  border-color: hsl(var(--accent) / 0.2);
+}
+
+.case-studies-section .text-accent {
+  color: hsl(var(--accent));
+}
+
+.case-studies-section .perspective {
+  perspective: 1000px;
+}
+
+.case-studies-section .transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.case-studies-section .backface-hidden {
+  backface-visibility: hidden;
+}
+
+.case-studies-section .rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.case-studies-section .transform-gpu {
+  transform: translateZ(0);
+}
+
+/* Case Studies animations */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--accent) / 0.6);
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 8s ease infinite;
+}
