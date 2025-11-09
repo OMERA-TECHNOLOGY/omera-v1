@@ -284,7 +284,7 @@ const ProjectCard = ({
   return (
     <motion.div
       variants={cardVariants}
-      className="group"
+      className="group relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -473,21 +473,20 @@ const ProjectCard = ({
             </Button>
           </div>
         </div>
-
-        {/* Growth Badge */}
-        <motion.div
-          className="absolute -top-3 -right-3 z-20"
-          animate={{
-            rotate: isHovered ? [0, -5, 5, 0] : 0,
-            scale: isHovered ? 1.1 : 1,
-          }}
-          transition={{ duration: 0.5 }}
-        >
-          <Badge className="bg-gradient-to-r from-accent to-accent/70 text-primary border-0 shadow-xl font-bold text-sm px-3 py-1.5 rounded-full">
-            +{project.stats.growth}
-          </Badge>
-        </motion.div>
       </GlowCard>
+      {/* Growth Badge */}
+      <motion.div
+        className="absolute -top-3 -right-3 z-20"
+        animate={{
+          rotate: isHovered ? [0, -5, 5, 0] : 0,
+          scale: isHovered ? 1.1 : 1,
+        }}
+        transition={{ duration: 0.5 }}
+      >
+        <Badge className="bg-gradient-to-r from-accent to-accent/70 text-primary border-0 shadow-xl font-bold text-sm px-3 py-1.5 rounded-full">
+          +{project.stats.growth}
+        </Badge>
+      </motion.div>
     </motion.div>
   );
 };

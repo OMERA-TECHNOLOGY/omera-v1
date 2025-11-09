@@ -23,6 +23,7 @@ import {
   Sparkles,
   Orbit,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
 
 // Tech Icons
 import {
@@ -91,27 +92,40 @@ const FloatingServiceIcon = ({
   }, []);
 
   return (
-    <button
+    <motion.button
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`
         absolute transform-gpu transition-all duration-1000 cursor-pointer group
-        ${isActive ? "scale-150 z-50" : "hover:scale-110 z-30"}
-        ${isHovered ? "scale-125" : ""}
+        ${isActive ? "z-50" : "z-30"}
       `}
       style={{
         top: `calc(${service.position.top})`,
         left: `calc(${service.position.left})`,
-        transform: `translate(${orbitX}px, ${orbitY}px)`,
         willChange: "transform",
         filter: isActive
           ? `drop-shadow(0 0 20px ${service.pulseColor})`
           : "none",
       }}
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{
+        scale: isActive ? 1.5 : isHovered ? 1.25 : 1,
+        opacity: 1,
+        x: orbitX,
+        y: orbitY,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        mass: 0.5,
+        duration: isActive ? 0.7 : 0.3,
+      }}
+      whileTap={{ scale: 1.4 }}
     >
       {/* Orbital Trail */}
-      <div
+      <motion.div
         className="absolute inset-0 rounded-full border-2 border-accent/20 animate-ping-slow"
         style={{
           width: `${service.orbitRadius * 2}px`,
@@ -119,20 +133,25 @@ const FloatingServiceIcon = ({
           top: `-${service.orbitRadius}px`,
           left: `-${service.orbitRadius}px`,
         }}
+        initial={{ scale: 0 }}
+        animate={{ scale: isActive ? 1 : 0.8 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
       />
 
-      <div
+      <motion.div
         className={`
           relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center
-          transform-gpu transition-all duration-500 group-hover:rotate-12
+          transform-gpu group-hover:rotate-12
           ${
             isActive
-              ? "bg-gradient-to-br from-accent to-accent/70 scale-110 shadow-2xl shadow-accent/50"
+              ? "bg-gradient-to-br from-accent to-accent/70 shadow-2xl shadow-accent/50"
               : "bg-gradient-to-br from-card to-card/80 border border-border/50 shadow-lg hover:shadow-xl backdrop-blur-xl"
           }
           ${isPulsing && !isActive ? "animate-pulse-fast" : ""}
         `}
         style={{ willChange: "transform, background" }}
+        whileHover={{ rotate: 12 }}
+        transition={{ duration: 0.3 }}
       >
         {/* Animated Background Effect */}
         <div
@@ -142,52 +161,70 @@ const FloatingServiceIcon = ({
           `}
         />
 
-        <div
-          className={`cursor-hover text-xl sm:text-2xl transition-all duration-500 relative z-10
+        <motion.div
+          className={`cursor-hover text-xl sm:text-2xl relative z-10
     ${
       isActive
         ? "text-white scale-110"
         : "text-accent group-hover:text-accent/80"
     }
   `}
+          animate={{ scale: isActive ? 1.1 : 1 }}
+          transition={{ duration: 0.3 }}
         >
           {service.icon}
-        </div>
+        </motion.div>
 
         {/* Active State Effects */}
         {isActive && (
           <>
-            <div className="absolute inset-0 rounded-2xl bg-accent animate-ping opacity-20"></div>
-            <div className="absolute -inset-2 sm:-inset-3 rounded-3xl border-2 border-accent/30 animate-pulse"></div>
-            <div className="absolute -inset-3 sm:-inset-4 rounded-3xl border border-accent/20 animate-ping-slow"></div>
+            <motion.div
+              className="absolute inset-0 rounded-2xl bg-accent opacity-20"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1.2 }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeOut" }}
+            ></motion.div>
+            <motion.div
+              className="absolute -inset-2 sm:-inset-3 rounded-3xl border-2 border-accent/30"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            ></motion.div>
           </>
         )}
 
         {/* Hover Effect */}
         {isHovered && !isActive && (
-          <div className="absolute -inset-1 rounded-2xl bg-accent/10 animate-pulse-fast"></div>
+          <motion.div
+            className="absolute -inset-1 rounded-2xl bg-accent/10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          ></motion.div>
         )}
-      </div>
+      </motion.div>
 
       {/* Enhanced Tooltip */}
-      <div
-        className={`
-          absolute bottom-full mb-3 left-1/2 -translate-x-1/2
-          px-3 py-2 bg-foreground text-background rounded-lg text-sm font-bold
-          whitespace-nowrap transition-all duration-300
-          backdrop-blur-xl border border-border/20 cursor-hover
-          ${
-            isHovered || isActive
-              ? "opacity-100 scale-100"
-              : "opacity-0 scale-90 pointer-events-none"
-          }
-        `}
-        style={{ willChange: "opacity, transform" }}
-      >
-        {service.title}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground"></div>
-      </div>
-    </button>
+      <AnimatePresence>
+        {(isHovered || isActive) && (
+          <motion.div
+            className={`
+            absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+            px-3 py-2 bg-foreground text-background rounded-lg text-sm font-bold
+            whitespace-nowrap backdrop-blur-xl border border-border/20 cursor-hover
+          `}
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            style={{ willChange: "opacity, transform" }}
+          >
+            {service.title}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-foreground"></div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
   );
 };
 
@@ -199,111 +236,135 @@ const ServiceCard = ({
   isActive: boolean;
 }) => {
   return (
-    <Card
-      className={`
-        relative bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-2xl
-        border border-border/30 rounded-3xl p-6 lg:p-8 overflow-hidden
-        transition-all duration-700 w-full max-w-2xl lg:max-w-4xl mx-auto
-        shadow-2xl hover:shadow-3xl
-        ${
-          isActive
-            ? "opacity-100 scale-100 translate-y-0 shadow-accent/20 h-auto mt-6"
-            : "opacity-0 scale-95 translate-y-8 pointer-events-none absolute h-0"
-        }
-      `}
-      style={{ willChange: "opacity, transform" }}
-    >
-      {/* Animated Background Gradient */}
-      <div
-        className={`
-          absolute inset-0 bg-gradient-to-br opacity-[0.08] transition-all duration-1000
-          ${service.gradient}
-        `}
-      />
-
-      {/* Header with Enhanced Styling */}
-      <div className="relative z-10 mb-6">
-        <div className="flex items-center gap-4 mb-4">
+    <AnimatePresence>
+      {isActive && (
+        <motion.div
+          className={`
+            relative bg-gradient-to-br from-card/90 to-card/60 backdrop-blur-2xl
+            border border-border/30 rounded-3xl p-6 lg:p-8 overflow-hidden
+            w-full max-w-2xl lg:max-w-4xl mx-auto
+            shadow-2xl shadow-accent/20 h-auto mt-6
+          `}
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 50, scale: 0.95 }}
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 15,
+            duration: 0.5,
+          }}
+          style={{ willChange: "opacity, transform" }}
+        >
+          {/* Animated Background Gradient */}
           <div
             className={`
-              w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center
-              bg-gradient-to-br from-accent to-accent/70 shadow-lg flex-shrink-0
-              transform transition-transform duration-500 hover:scale-110
+              absolute inset-0 bg-gradient-to-br opacity-[0.08] transition-all duration-1000
+              ${service.gradient}
             `}
-          >
-            <div className="text-white text-xl lg:text-2xl">{service.icon}</div>
-          </div>
-          <div className="flex-1 min-w-0 cursor-hover">
-            <h3 className="cursor-hover text-xl lg:text-3xl font-black text-foreground mb-2 line-clamp-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              {service.title}
-            </h3>
+          />
 
-            <div className="flex gap-2 flex-wrap">
-              {service.tech.slice(0, 3).map((tech, index) => (
-                <Badge
+          {/* Header with Enhanced Styling */}
+          <div className="relative z-10 mb-6">
+            <div className="flex items-center gap-4 mb-4">
+              <motion.div
+                className={`
+                  w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center
+                  bg-gradient-to-br from-accent to-accent/70 shadow-lg flex-shrink-0
+                `}
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="text-white text-xl lg:text-2xl">
+                  {service.icon}
+                </div>
+              </motion.div>
+              <div className="flex-1 min-w-0 cursor-hover">
+                <h3 className="cursor-hover text-xl lg:text-3xl font-black text-foreground mb-2 line-clamp-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                  {service.title}
+                </h3>
+
+                <div className="flex gap-2 flex-wrap">
+                  {service.tech.slice(0, 3).map((tech, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + index * 0.1 }}
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="cursor-hover bg-accent/10 text-accent border-accent/20 text-xs font-bold px-2 py-1"
+                      >
+                        {tech.icon}
+                        <span className="ml-1">{tech.name}</span>
+                      </Badge>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <p className="text-muted-foreground leading-relaxed text-base lg:text-lg font-light">
+              {service.description}
+            </p>
+          </div>
+
+          {/* Features with Enhanced Animation */}
+          <div className="relative z-10 mb-6">
+            <h4 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+              <Zap className="w-4 h-4 text-accent animate-pulse-fast" />
+              <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                Key Capabilities
+              </span>
+            </h4>
+            <div className="grid gap-3">
+              {service.features.map((feature, index) => (
+                <motion.div
                   key={index}
-                  variant="secondary"
-                  className="cursor-hover bg-accent/10 text-accent border-accent/20 text-xs font-bold px-2 py-1"
+                  className="flex items-start gap-3 p-3 rounded-xl bg-background/40 border border-border/20 hover:border-accent/30 transition-all duration-300 group hover:scale-[1.02] hover:shadow-lg"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 + index * 0.08 }}
+                  whileHover={{ scale: 1.02, x: 5 }}
                 >
-                  {tech.icon}
-                  <span className="ml-1">{tech.name}</span>
-                </Badge>
+                  <div className="w-2 h-2 bg-accent rounded-full flex-shrink-0 mt-2 group-hover:scale-150 transition-transform duration-300 animate-pulse-small" />
+                  <span className="text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-relaxed font-medium">
+                    {feature}
+                  </span>
+                </motion.div>
               ))}
             </div>
           </div>
-        </div>
 
-        <p className="text-muted-foreground leading-relaxed text-base lg:text-lg font-light">
-          {service.description}
-        </p>
-      </div>
-
-      {/* Features with Enhanced Animation */}
-      <div className="relative z-10 mb-6">
-        <h4 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-          <Zap className="w-4 h-4 text-accent animate-pulse-fast" />
-          <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            Key Capabilities
-          </span>
-        </h4>
-        <div className="grid gap-3">
-          {service.features.map((feature, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-3 p-3 rounded-xl bg-background/40 border border-border/20 hover:border-accent/30 transition-all duration-300 group hover:scale-[1.02] hover:shadow-lg"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <div className="w-2 h-2 bg-accent rounded-full flex-shrink-0 mt-2 group-hover:scale-150 transition-transform duration-300 animate-pulse-small" />
-              <span className="text-foreground/80 group-hover:text-foreground transition-colors text-sm leading-relaxed font-medium">
-                {feature}
-              </span>
+          {/* Stats with Enhanced Design */}
+          <div className="relative z-10">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {service.stats.map((stat, index) => (
+                <motion.div
+                  key={index}
+                  className="text-center p-3 rounded-xl bg-background/30 border border-border/20 hover:border-accent/20 transition-all duration-300 group hover:scale-105 hover:shadow-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.05 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="text-xl lg:text-2xl font-black text-foreground mb-1 group-hover:scale-110 transition-transform duration-300">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Stats with Enhanced Design */}
-      <div className="relative z-10">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {service.stats.map((stat, index) => (
-            <div
-              key={index}
-              className="text-center p-3 rounded-xl bg-background/30 border border-border/20 hover:border-accent/20 transition-all duration-300 group hover:scale-105 hover:shadow-lg"
-            >
-              <div className="text-xl lg:text-2xl font-black text-foreground mb-1 group-hover:scale-110 transition-transform duration-300">
-                {stat.value}
-              </div>
-              <div className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Animated Border Effect */}
-      <div className="absolute inset-0 rounded-3xl border-2 border-transparent hover:border-accent/20 transition-all duration-500 pointer-events-none" />
-    </Card>
+          {/* Animated Border Effect */}
+          <div className="absolute inset-0 rounded-3xl border-2 border-transparent hover:border-accent/20 transition-all duration-500 pointer-events-none" />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
@@ -317,14 +378,14 @@ const ZigzagButton = ({
   onClick: () => void;
 }) => {
   return (
-    <Button
+    <motion.button
       onClick={onClick}
       size="lg"
       className={`
-        absolute transform transition-all duration-500 cursor-pointer group
+        absolute transform cursor-pointer group
         ${
           isActive
-            ? "bg-accent hover:bg-accent/90 text-primary scale-110 shadow-2xl shadow-accent/30 z-50"
+            ? "bg-accent hover:bg-accent/90 text-primary shadow-2xl shadow-accent/30 z-50"
             : "bg-card/80 hover:bg-card text-foreground border border-border/50 backdrop-blur-xl z-30"
         }
         text-sm font-bold px-4 py-2.5 rounded-2xl hover:scale-105 whitespace-nowrap
@@ -335,14 +396,22 @@ const ZigzagButton = ({
         left: service.buttonPosition.left,
         willChange: "transform, background-color, box-shadow",
       }}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: isActive ? 1.1 : 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
       <div className="flex items-center gap-2 cursor-hover">
-        <div className={isActive ? "animate-spin-slow" : ""}>
+        <motion.div
+          animate={{ rotate: isActive ? 360 : 0 }}
+          transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+        >
           {service.icon}
-        </div>
+        </motion.div>
         <span>{service.title}</span>
       </div>
-    </Button>
+    </motion.button>
   );
 };
 
@@ -753,17 +822,26 @@ export const About = () => {
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Animated Gradient Orbs */}
-        <div
+        <motion.div
           className="absolute top-20 left-4 sm:left-10 w-32 sm:w-48 lg:w-72 h-32 sm:h-48 lg:h-72 bg-purple-500/20 rounded-full blur-3xl animate-float-rotate"
           style={parallaxStyle}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         />
-        <div
+        <motion.div
           className="absolute top-40 right-4 sm:right-10 w-40 sm:w-64 lg:w-96 h-40 sm:h-64 lg:h-96 bg-blue-500/20 rounded-full blur-3xl animate-float"
           style={{ ...parallaxStyle, animationDelay: "2s" }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
         />
-        <div
+        <motion.div
           className="absolute bottom-20 left-1/4 w-32 sm:w-48 lg:w-80 h-32 sm:h-48 lg:h-80 bg-emerald-500/20 rounded-full blur-3xl animate-float-rotate"
           style={{ ...parallaxStyle, animationDelay: "4s" }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
         />
 
         {/* Grid Background */}
@@ -773,15 +851,25 @@ export const About = () => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Enhanced Header Section */}
         <div className="text-center mb-16 sm:mb-24 lg:mb-32">
-          <div className="inline-flex items-center gap-3 mb-6 sm:mb-8 lg:mb-12 px-4 py-2 bg-accent/10 rounded-full border border-accent/20 backdrop-blur-xl">
+          <motion.div
+            className="inline-flex items-center gap-3 mb-6 sm:mb-8 lg:mb-12 px-4 py-2 bg-accent/10 rounded-full border border-accent/20 backdrop-blur-xl"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <Sparkles className="w-4 h-4 text-accent animate-pulse-fast" />
             <span className="text-sm font-bold text-accent uppercase tracking-wider">
               Engineering Excellence
             </span>
             <Sparkles className="w-4 h-4 text-accent animate-pulse-fast" />
-          </div>
+          </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 sm:mb-8 lg:mb-12 tracking-tight">
+          <motion.h1
+            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 sm:mb-8 lg:mb-12 tracking-tight"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
             <span className="bg-gradient-to-r from-foreground via-foreground/90 to-foreground/80 bg-clip-text text-transparent">
               DIGITAL
             </span>
@@ -789,9 +877,14 @@ export const About = () => {
             <span className="bg-gradient-to-r from-accent via-accent/90 to-accent/70 bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_200%]">
               INNOVATION
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light mb-8 sm:mb-12 lg:mb-16">
+          <motion.p
+            className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light mb-8 sm:mb-12 lg:mb-16"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
             We are elite engineers and designers building
             <span className="text-accent font-semibold animate-pulse-light">
               {" "}
@@ -799,18 +892,28 @@ export const About = () => {
             </span>
             From concept to global scale, we deliver unparalleled technical
             excellence.
-          </p>
+          </motion.p>
         </div>
 
         {/* Enhanced Interactive Services Section */}
         <div className="relative mb-20 sm:mb-28 lg:mb-36">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <motion.h2
+              className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
               Our Services
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto font-light">
+            </motion.h2>
+            <motion.p
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto font-light"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
               Click on any service to explore our capabilities
-            </p>
+            </motion.p>
           </div>
 
           {/* Desktop Layout */}
@@ -820,11 +923,16 @@ export const About = () => {
               className="relative w-full max-w-5xl lg:max-w-7xl mx-auto h-64 lg:h-96 mb-12 rounded-3xl bg-gradient-to-br from-background/60 to-background/30 border-2 border-border/20 backdrop-blur-2xl overflow-visible shadow-2xl"
             >
               {/* Central Orbital System */}
-              <div className="absolute inset-0 flex items-center justify-center">
+              <motion.div
+                className="absolute inset-0 flex items-center justify-center"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+              >
                 <div className="w-32 h-32 rounded-full border-2 border-accent/20 animate-spin-slow">
                   <Orbit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-accent/40" />
                 </div>
-              </div>
+              </motion.div>
 
               {/* Enhanced Sequential Tracking Line */}
               <div className="absolute inset-0 pointer-events-none">
@@ -846,16 +954,20 @@ export const About = () => {
                   />
 
                   {/* Active Tracking Line with Glow */}
-                  <path
+                  <motion.path
                     d={trackingPathD}
                     stroke="hsl(var(--accent))"
                     strokeWidth="4"
                     fill="none"
                     opacity="0.9"
-                    className="transition-[stroke-dashoffset] duration-1000 ease-out"
                     strokeDasharray={fullPathLength}
                     strokeDashoffset={fullPathLength - activePathLength}
                     filter="url(#glow)"
+                    initial={{ strokeDashoffset: fullPathLength }}
+                    animate={{
+                      strokeDashoffset: fullPathLength - activePathLength,
+                    }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
                   />
 
                   {/* SVG Filters for Glow Effect */}
@@ -905,12 +1017,12 @@ export const About = () => {
             <div className="relative w-full max-w-md mx-auto mb-8">
               {/* Vertical Service Buttons with Enhanced Design */}
               <div className="flex flex-col gap-4">
-                {services.map((service) => (
-                  <Button
+                {services.map((service, index) => (
+                  <motion.button
                     key={service.id}
                     onClick={() => setActiveService(service.id)}
                     className={`
-                      w-full justify-start py-5 px-6 text-left transition-all duration-500
+                      w-full justify-start py-5 px-6 text-left
                       rounded-2xl border-2 backdrop-blur-xl font-bold
                       ${
                         activeService === service.id
@@ -921,6 +1033,16 @@ export const About = () => {
                     style={{
                       willChange: "transform, background-color, box-shadow",
                     }}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      delay: 0.1 * index,
+                      type: "spring",
+                      stiffness: 100,
+                      damping: 10,
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex items-center gap-4 cursor-hover">
                       <div
@@ -934,7 +1056,7 @@ export const About = () => {
                       </div>
                       <span className="text-lg">{service.title}</span>
                     </div>
-                  </Button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -947,8 +1069,8 @@ export const About = () => {
 
           {/* Enhanced Service Navigation Dots */}
           <div className="flex justify-center gap-3 sm:gap-4 mt-8 sm:mt-12">
-            {services.map((service) => (
-              <button
+            {services.map((service, index) => (
+              <motion.button
                 key={service.id}
                 onClick={() => setActiveService(service.id)}
                 className={`
@@ -959,6 +1081,11 @@ export const About = () => {
                       : "bg-border hover:bg-accent/50 hover:scale-110"
                   }
                 `}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + index * 0.05 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               />
             ))}
           </div>
@@ -967,19 +1094,33 @@ export const About = () => {
         {/* Enhanced Stats Section */}
         <div className="mb-20 sm:mb-28 lg:mb-36">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <motion.h2
+              className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+            >
               By The Numbers
-            </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto font-light">
+            </motion.h2>
+            <motion.p
+              className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto font-light"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.5 }}
+            >
               Our track record speaks for itself
-            </p>
+            </motion.p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {stats.map((stat, index) => (
-              <Card
+              <motion.div
                 key={stat.label}
                 className="relative bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-2xl border-2 border-border/30 rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-8 group hover:scale-105 hover:shadow-2xl hover:shadow-accent/10 transition-all duration-500 overflow-hidden"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
               >
                 {/* Animated Background */}
                 <div
@@ -1006,7 +1147,7 @@ export const About = () => {
 
                 {/* Hover Border Effect */}
                 <div className="absolute inset-0 rounded-2xl lg:rounded-3xl border-2 border-transparent group-hover:border-accent/20 transition-all duration-500 pointer-events-none" />
-              </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -1019,23 +1160,39 @@ export const About = () => {
             <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-2xl" />
           </div>
 
-          <Card className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 border border-border/20 rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 backdrop-blur-sm overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group">
+          <motion.div
+            className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 border border-border/20 rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 backdrop-blur-sm overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group"
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 1.5, duration: 0.7, type: "spring" }}
+            whileHover={{ scale: 1.01 }}
+          >
             {/* Simple Border Glow */}
             <div className="absolute inset-0 rounded-2xl lg:rounded-3xl border-2 border-transparent group-hover:border-accent/10 transition-all duration-500" />
 
             {/* Content Container */}
             <div className="relative z-20">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full">
+              <motion.div
+                className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.7, duration: 0.4 }}
+              >
                 <div className="w-2 h-2 bg-accent rounded-full" />
                 <span className="text-sm font-bold text-accent uppercase tracking-wider">
                   Let's Create
                 </span>
                 <div className="w-2 h-2 bg-accent rounded-full" />
-              </div>
+              </motion.div>
 
               {/* Main Heading */}
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 sm:mb-6">
+              <motion.h3
+                className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 sm:mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.8, duration: 0.5 }}
+              >
                 <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
                   Ready to Build
                 </span>
@@ -1043,75 +1200,109 @@ export const About = () => {
                 <span className="bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">
                   Something Amazing?
                 </span>
-              </h3>
+              </motion.h3>
 
               {/* Description */}
-              <p className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
+              <motion.p
+                className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.9, duration: 0.5 }}
+              >
                 Your vision + our expertise ={" "}
                 <span className="text-accent font-semibold">
                   digital excellence
                 </span>
                 . Let's make it happen.
-              </p>
+              </motion.p>
 
               {/* Optimized CTA Buttons Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
                 {/* Primary CTA */}
-                <Button
-                  size="lg"
-                  className="group relative bg-accent hover:bg-accent/90 text-primary font-bold px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px]"
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.0, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <Target className="w-5 h-5" />
-                      <span className="font-bold">Start Project</span>
-                      <Rocket className="w-5 h-5" />
+                  <Button
+                    size="lg"
+                    className="group relative bg-accent hover:bg-accent/90 text-primary font-bold px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px]"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center gap-2">
+                        <Target className="w-5 h-5" />
+                        <span className="font-bold">Start Project</span>
+                        <Rocket className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-medium text-primary/80">
+                        Free Consultation
+                      </span>
                     </div>
-                    <span className="text-xs font-medium text-primary/80">
-                      Free Consultation
-                    </span>
-                  </div>
-                </Button>
+                  </Button>
+                </motion.div>
 
                 {/* Secondary CTA */}
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="group bg-background/80 hover:bg-background border border-border hover:border-accent/30 text-foreground hover:text-accent px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px] font-semibold"
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.1, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      <span>Book Call</span>
-                      <ArrowRight className="w-5 h-5" />
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group bg-background/80 hover:bg-background border border-border hover:border-accent/30 text-foreground hover:text-accent px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px] font-semibold"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        <span>Book Call</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground group-hover:text-accent/80">
+                        30-min Session
+                      </span>
                     </div>
-                    <span className="text-xs font-medium text-muted-foreground group-hover:text-accent/80">
-                      30-min Session
-                    </span>
-                  </div>
-                </Button>
+                  </Button>
+                </motion.div>
 
                 {/* Tertiary CTA */}
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="group bg-background/80 hover:bg-background border border-border hover:border-accent/30 text-foreground hover:text-accent px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px] font-semibold"
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 2.2, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <Eye className="w-5 h-5" />
-                      <span>View Work</span>
-                      <ArrowRight className="w-5 h-5" />
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group bg-background/80 hover:bg-background border border-border hover:border-accent/30 text-foreground hover:text-accent px-6 py-4 rounded-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px] font-semibold"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center gap-2">
+                        <Eye className="w-5 h-5" />
+                        <span>View Work</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-medium text-muted-foreground group-hover:text-accent/80">
+                        Our Portfolio
+                      </span>
                     </div>
-                    <span className="text-xs font-medium text-muted-foreground group-hover:text-accent/80">
-                      Our Portfolio
-                    </span>
-                  </div>
-                </Button>
+                  </Button>
+                </motion.div>
               </div>
 
               {/* Simple Trust Indicators */}
-              <div className="mt-8 pt-6 border-t border-border/20">
+              <motion.div
+                className="mt-8 pt-6 border-t border-border/20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 2.3, duration: 0.5 }}
+              >
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="flex -space-x-2">
@@ -1129,7 +1320,7 @@ export const About = () => {
                     <span>8+ Years</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
 
             {/* Simple Corner Accents */}
@@ -1137,7 +1328,7 @@ export const About = () => {
             <div className="absolute top-3 right-3 w-2 h-2 border-t border-r border-accent/20" />
             <div className="absolute bottom-3 left-3 w-2 h-2 border-b border-l border-accent/20" />
             <div className="absolute bottom-3 right-3 w-2 h-2 border-b border-r border-accent/20" />
-          </Card>
+          </motion.div>
         </div>
       </div>
     </section>

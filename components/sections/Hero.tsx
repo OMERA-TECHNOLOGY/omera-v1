@@ -286,28 +286,25 @@ export const Hero = () => {
 
           {/* CTA Button */}
           <motion.div variants={itemVariants}>
-            <Button
-              size="lg"
-              className="w-fit bg-accent hover:bg-accent/90 text-primary font-semibold px-8 py-6 rounded-xl group"
-              onClick={() => scrollToSection("contact")}
-              whileHover={{
-                scale: 1.05,
-                transition: { type: "spring", stiffness: 400, damping: 10 },
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Start Your Project
-              <motion.div
-                animate={{ x: [0, 5, 0] }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                size="lg"
+                className="w-fit bg-accent hover:bg-accent/90 text-primary font-semibold px-8 py-6 rounded-xl group"
+                onClick={() => scrollToSection("contact")}
               >
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </motion.div>
-            </Button>
+                Start Your Project
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </motion.div>
+              </Button>
+            </motion.div>
           </motion.div>
         </motion.div>
 
