@@ -38,9 +38,9 @@ const NavBar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <button
           onClick={() => scrollToSection("hero")}
-          className="text-2xl font-bold tracking-[0.3em] bg-gradient-to-r from-primary via-accent to-accent bg-clip-text text-transparent hover:scale-105 transition-all duration-300 cursor-hover"
+          className="text-2xl font-bold tracking-[0.3em] bg-gradient-to-r from-primary via-accent to-accent bg-clip-text text-transparent hover:scale-105 transform-gpu transition-transform duration-300 cursor-hover"
         >
-          <Logo className="h-14 w-auto text-foreground" />
+          <Logo className="h-14 w-auto text-foreground transform-gpu will-change-transform" />
         </button>
 
         <div className="hidden md:flex items-center gap-8">

@@ -4,10 +4,10 @@ import { Footer } from "@/components/sections/Footer";
 import Providers from "@/app/provider";
 
 export const metadata = {
+  metadataBase: new URL("https://omera.tech"),
   title: "OMERA Technology",
   description:
     "We build digital experiences that drive measurable growth for modern businesses.",
-  viewport: "width=device-width, initial-scale=1.0",
   icons: {
     icon: "/assets/logo.svg",
     apple: "/assets/apple-touch-icon.png",
@@ -33,6 +33,11 @@ export const metadata = {
     description: "Full-stack development built for business impact.",
     images: ["/assets/twitter-image.png"],
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -19,23 +19,66 @@ import Logo from "../Logo";
 const rotatingWords = ["scale", "optimize", "transform", "secure"];
 const techStack = ["React", "Node.js", "AWS", "Python", "AI/ML"];
 
+const services = [
+  { icon: Code, label: "Development" },
+  { icon: Globe, label: "Web" },
+  { icon: Smartphone, label: "Mobile" },
+  { icon: Cloud, label: "Cloud" },
+];
+
+const realTimeItems = [
+  { label: "API Requests", value: 75, color: "bg-accent" },
+  { label: "Database", value: 60, color: "bg-blue-400" },
+  { label: "Cache", value: 45, color: "bg-green-400" },
+  { label: "Storage", value: 30, color: "bg-purple-400" },
+];
+
 export const Hero = () => {
   const [wordIndex, setWordIndex] = useState(0);
   const [techIndex, setTechIndex] = useState(0);
 
   useEffect(() => {
-    const wordInterval = setInterval(() => {
+    const interval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % rotatingWords.length);
-    }, 3000);
-
-    const techInterval = setInterval(() => {
       setTechIndex((prev) => (prev + 1) % techStack.length);
     }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => {
-      clearInterval(wordInterval);
-      clearInterval(techInterval);
-    };
+  const rotatingWordSpans = useMemo(() => {
+    return rotatingWords.map((word, index) => (
+      <span
+        key={word}
+        className={`role ${index === wordIndex ? "active" : ""}`}
+      >
+        {word}
+      </span>
+    ));
+  }, [wordIndex]);
+
+  const techSpans = useMemo(() => {
+    return techStack.map((tech, index) => (
+      <span
+        key={tech}
+        className={`role tech-role ${index === techIndex ? "active" : ""}`}
+      >
+        {tech}
+      </span>
+    ));
+  }, [techIndex]);
+
+  const serviceComponents = useMemo(() => {
+    return services.map((service) => (
+      <div
+        key={service.label}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent/5 border border-accent/10"
+      >
+        <service.icon className="w-4 h-4 text-accent" />
+        <span className="text-sm font-medium text-foreground">
+          {service.label}
+        </span>
+      </div>
+    ));
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -43,7 +86,10 @@ export const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-background pb-6">
+    <section
+      className="relative min-h-screen flex items-center overflow-hidden bg-background pb-6"
+      id="hero"
+    >
       <div className="absolute inset-0">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -51,7 +97,7 @@ export const Hero = () => {
 
       <div className="relative max-w-7xl mx-auto w-full px-6 lg:px-8 grid lg:grid-cols-2 gap-16 lg:gap-24 items-center min-h-screen">
         <div className="flex flex-col justify-center space-y-8 py-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 w-fit">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-10 border border-accent-20 w-fit">
             <Sparkles className="w-4 h-4 text-accent" />
             <span className="text-sm font-medium text-accent">
               Enterprise Tech Solutions
@@ -69,17 +115,8 @@ export const Hero = () => {
               <div className="flex items-center gap-4">
                 <span className="text-muted-foreground">That</span>
                 <div className="text-changer">
-                  <div className="roles-container">
-                    {rotatingWords.map((word, index) => (
-                      <span
-                        key={word}
-                        className={`role ${
-                          index === wordIndex ? "active" : ""
-                        }`}
-                      >
-                        {word}
-                      </span>
-                    ))}
+                  <div className="roles-container" aria-live="polite">
+                    {rotatingWordSpans}
                   </div>
                 </div>
               </div>
@@ -93,40 +130,12 @@ export const Hero = () => {
             <div className="flex items-center gap-3 text-lg text-muted-foreground">
               <span>Powered by</span>
               <div className="text-changer tech-changer">
-                <div className="roles-container">
-                  {techStack.map((tech, index) => (
-                    <span
-                      key={tech}
-                      className={`role tech-role ${
-                        index === techIndex ? "active" : ""
-                      }`}
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                <div className="roles-container">{techSpans}</div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-4">
-            {[
-              { icon: Code, label: "Development" },
-              { icon: Globe, label: "Web" },
-              { icon: Smartphone, label: "Mobile" },
-              { icon: Cloud, label: "Cloud" },
-            ].map((service, index) => (
-              <div
-                key={service.label}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-accent/5 border border-accent/10"
-              >
-                <service.icon className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-foreground">
-                  {service.label}
-                </span>
-              </div>
-            ))}
-          </div>
+          <div className="flex flex-wrap gap-4">{serviceComponents}</div>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
@@ -202,12 +211,7 @@ export const Hero = () => {
               </div>
 
               <div className="space-y-3">
-                {[
-                  { label: "API Requests", value: 75, color: "bg-accent" },
-                  { label: "Database", value: 60, color: "bg-blue-400" },
-                  { label: "Cache", value: 45, color: "bg-green-400" },
-                  { label: "Storage", value: 30, color: "bg-purple-400" },
-                ].map((item, index) => (
+                {realTimeItems.map((item, index) => (
                   <div key={item.label} className="flex items-center gap-3">
                     <span className="text-xs text-muted-foreground w-20">
                       {item.label}
