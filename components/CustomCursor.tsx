@@ -21,7 +21,7 @@ export const CustomCursor = () => {
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
-        target.classList.contains("cursor-hover")
+        target.closest(".cursor-hover")
       ) {
         setIsHovering(true);
       } else {

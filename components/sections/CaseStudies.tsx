@@ -620,10 +620,10 @@ export const CaseStudies = () => {
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
             <span className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Our Galactic
+              Our Previous
             </span>
             <span className="block bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
-              Showcase
+              Clients
             </span>
           </h2>
 

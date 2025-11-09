@@ -2,6 +2,7 @@
 @import "./components/navbar.css";
 @import "./components/hero.css";
 @import "./components/case-studies.css";
+@import "./components/custom-cursor.css";
 
 :root {
   /* Light Theme - Default */

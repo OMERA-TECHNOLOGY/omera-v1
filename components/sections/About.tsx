@@ -143,14 +143,13 @@ const FloatingServiceIcon = ({
         />
 
         <div
-          className={`
-            text-xl sm:text-2xl transition-all duration-500 relative z-10
-            ${
-              isActive
-                ? "text-white scale-110"
-                : "text-accent group-hover:text-accent/80"
-            }
-          `}
+          className={`cursor-hover text-xl sm:text-2xl transition-all duration-500 relative z-10
+    ${
+      isActive
+        ? "text-white scale-110"
+        : "text-accent group-hover:text-accent/80"
+    }
+  `}
         >
           {service.icon}
         </div>
@@ -176,7 +175,7 @@ const FloatingServiceIcon = ({
           absolute bottom-full mb-3 left-1/2 -translate-x-1/2
           px-3 py-2 bg-foreground text-background rounded-lg text-sm font-bold
           whitespace-nowrap transition-all duration-300
-          backdrop-blur-xl border border-border/20
+          backdrop-blur-xl border border-border/20 cursor-hover
           ${
             isHovered || isActive
               ? "opacity-100 scale-100"
@@ -234,16 +233,17 @@ const ServiceCard = ({
           >
             <div className="text-white text-xl lg:text-2xl">{service.icon}</div>
           </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl lg:text-3xl font-black text-foreground mb-2 line-clamp-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <div className="flex-1 min-w-0 cursor-hover">
+            <h3 className="cursor-hover text-xl lg:text-3xl font-black text-foreground mb-2 line-clamp-1 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
               {service.title}
             </h3>
+
             <div className="flex gap-2 flex-wrap">
               {service.tech.slice(0, 3).map((tech, index) => (
                 <Badge
                   key={index}
                   variant="secondary"
-                  className="bg-accent/10 text-accent border-accent/20 text-xs font-bold px-2 py-1"
+                  className="cursor-hover bg-accent/10 text-accent border-accent/20 text-xs font-bold px-2 py-1"
                 >
                   {tech.icon}
                   <span className="ml-1">{tech.name}</span>
@@ -336,7 +336,7 @@ const ZigzagButton = ({
         willChange: "transform, background-color, box-shadow",
       }}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 cursor-hover">
         <div className={isActive ? "animate-spin-slow" : ""}>
           {service.icon}
         </div>
@@ -922,7 +922,7 @@ export const About = () => {
                       willChange: "transform, background-color, box-shadow",
                     }}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 cursor-hover">
                       <div
                         className={`p-3 rounded-xl ${
                           activeService === service.id
