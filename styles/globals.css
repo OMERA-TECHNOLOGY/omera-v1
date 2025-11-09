@@ -4,8 +4,10 @@
 @import "./components/case-studies.css";
 @import "./components/custom-cursor.css";
 
+/* ============================
+   THEME ROOT
+============================ */
 :root {
-  /* Light Theme - Default */
   --background: 0 0% 98%;
   --foreground: 214 72% 13%;
   --card: 0 0% 100%;
@@ -27,13 +29,14 @@
   --ring: 38 100% 59%;
   --radius: 0.75rem;
 
-  /* Glass Morphism */
   --glass-bg: hsla(0, 0%, 100%, 0.7);
   --glass-border: hsla(214, 72%, 13%, 0.1);
 }
 
+/* ============================
+   DARK MODE THEME
+============================ */
 .dark {
-  /* Dark Theme */
   --background: 214 72% 13%;
   --foreground: 0 0% 95%;
   --card: 214 72% 15%;
@@ -57,7 +60,9 @@
   --glass-border: hsla(0, 0%, 100%, 0.1);
 }
 
-/* Theme Configuration for Tailwind v4 */
+/* ============================
+   TAILWIND V4 THEME MAP
+============================ */
 @theme {
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -83,7 +88,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Global Base Styles */
+/* ============================
+   GLOBAL BASE
+============================ */
 * {
   border-color: hsl(var(--border));
 }
@@ -95,12 +102,13 @@ body {
     sans-serif;
 }
 
-/* Scroll Smooth */
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom Scrollbar */
+/* ============================
+   SCROLLBAR
+============================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -114,13 +122,16 @@ html {
   border-radius: 4px;
 }
 
-/* Safe transitions */
+/* ============================
+   TRANSITIONS
+============================ */
 * {
-  transition: border-color 0.3s ease, background-color 0.3s ease,
-    color 0.3s ease;
+  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
 }
 
-/* Reduce motion for users who prefer it */
+/* ============================
+   REDUCE MOTION
+============================ */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

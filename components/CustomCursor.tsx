@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 
 export const CustomCursor = () => {
@@ -9,7 +8,14 @@ export const CustomCursor = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      // More reliable mobile detection
+      const mobile = window.innerWidth < 1024; // Use 1024px to be safe
+      setIsMobile(mobile);
+
+      // CRITICAL: Always restore cursor on mobile
+      if (mobile) {
+        document.body.style.cursor = "auto";
+      }
     };
 
     const updateCursorPosition = (e: MouseEvent) => {
@@ -18,33 +24,49 @@ export const CustomCursor = () => {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+
+      const hasCursorHover = target.closest(".cursor-hover") !== null;
+
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
-        target.closest(".cursor-hover")
+        (target.hasAttribute("role") &&
+          target.getAttribute("role") === "button") ||
+        hasCursorHover
       ) {
         setIsHovering(true);
+        // Hide default cursor only when hovering interactive elements
+        document.body.style.cursor = "none";
       } else {
         setIsHovering(false);
+        // Show default cursor when not hovering
+        document.body.style.cursor = "auto";
       }
     };
 
+    // Initial check
     checkMobile();
 
+    // Only add cursor events if not mobile
     if (!isMobile) {
       window.addEventListener("mousemove", updateCursorPosition);
       window.addEventListener("mouseover", handleMouseOver);
+      window.addEventListener("resize", checkMobile);
+    } else {
+      // Ensure cursor is visible on mobile
+      document.body.style.cursor = "auto";
     }
-
-    window.addEventListener("resize", checkMobile);
 
     return () => {
       window.removeEventListener("mousemove", updateCursorPosition);
       window.removeEventListener("mouseover", handleMouseOver);
       window.removeEventListener("resize", checkMobile);
+      // Restore cursor when component unmounts
+      document.body.style.cursor = "auto";
     };
   }, [isMobile]);
 
+  // Don't render anything on mobile
   if (isMobile) {
     return null;
   }

@@ -1,4 +1,7 @@
-/* Custom Cursor Styles */
+/* ============================
+   Custom Cursor (Desktop Only)
+============================ */
+
 .custom-cursor {
   pointer-events: none;
   position: fixed;
@@ -8,22 +11,21 @@
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 9999;
-  transition: width 0.3s, height 0.3s, border 0.3s;
+  transition: width 0.25s, height 0.25s, background 0.25s, border 0.25s;
 }
 
 .custom-cursor.hover {
   width: 50px;
   height: 50px;
+  background: hsl(var(--accent) / 0.15);
   border-color: hsl(var(--accent) / 0.5);
-  background: hsl(var(--accent) / 0.1);
 }
 
-/* Hide default cursor when custom cursor is active */
+/* Hide cursor and show custom only on desktop */
 @media (hover: hover) and (pointer: fine) {
   body {
     cursor: none !important;
   }
-
   button,
   a,
   .cursor-hover {
@@ -31,19 +33,20 @@
   }
 }
 
-/* Mobile detection */
+/* Mobile, keep everything native */
 @media (max-width: 768px) {
   .custom-cursor {
     display: none !important;
   }
 
-  body {
-    cursor: auto !important;
-  }
-
+  body,
   button,
   a,
-  .cursor-hover {
-    cursor: pointer !important;
+  input,
+  textarea,
+  select,
+  [role="button"] {
+    cursor: auto !important;
   }
 }
+
