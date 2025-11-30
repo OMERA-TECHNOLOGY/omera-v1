@@ -1,72 +1,87 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const CustomCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const cursorOuterRef = useRef<HTMLDivElement>(null);
+  const cursorInnerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | undefined>(undefined);
+  const positionRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const checkMobile = () => {
-      // More reliable mobile detection
-      const mobile = window.innerWidth < 1024; // Use 1024px to be safe
+      const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
 
-      // CRITICAL: Always restore cursor on mobile
       if (mobile) {
         document.body.style.cursor = "auto";
       }
     };
 
-    const updateCursorPosition = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+    checkMobile();
+
+    if (isMobile) {
+      return;
+    }
+
+    const cursorOuter = cursorOuterRef.current;
+    const cursorInner = cursorInnerRef.current;
+
+    if (!cursorOuter || !cursorInner) return;
+
+    // Use RAF to batch DOM updates for smooth performance
+    const updateCursorPosition = () => {
+      const { x, y } = positionRef.current;
+      cursorOuter.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      cursorInner.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      positionRef.current = { x: e.clientX, y: e.clientY };
+      
+      // Cancel previous RAF if it exists
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      
+      // Schedule update for next frame
+      rafRef.current = requestAnimationFrame(updateCursorPosition);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-
       const hasCursorHover = target.closest(".cursor-hover") !== null;
 
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
-        (target.hasAttribute("role") &&
-          target.getAttribute("role") === "button") ||
+        (target.hasAttribute("role") && target.getAttribute("role") === "button") ||
         hasCursorHover
       ) {
         setIsHovering(true);
-        // Hide default cursor only when hovering interactive elements
         document.body.style.cursor = "none";
       } else {
         setIsHovering(false);
-        // Show default cursor when not hovering
         document.body.style.cursor = "auto";
       }
     };
 
-    // Initial check
-    checkMobile();
-
-    // Only add cursor events if not mobile
-    if (!isMobile) {
-      window.addEventListener("mousemove", updateCursorPosition);
-      window.addEventListener("mouseover", handleMouseOver);
-      window.addEventListener("resize", checkMobile);
-    } else {
-      // Ensure cursor is visible on mobile
-      document.body.style.cursor = "auto";
-    }
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("resize", checkMobile);
 
     return () => {
-      window.removeEventListener("mousemove", updateCursorPosition);
+      window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseover", handleMouseOver);
       window.removeEventListener("resize", checkMobile);
-      // Restore cursor when component unmounts
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
       document.body.style.cursor = "auto";
     };
   }, [isMobile]);
 
-  // Don't render anything on mobile
   if (isMobile) {
     return null;
   }
@@ -74,18 +89,22 @@ export const CustomCursor = () => {
   return (
     <>
       <div
+        ref={cursorOuterRef}
         className={`custom-cursor ${isHovering ? "hover" : ""}`}
         style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          position: "fixed",
+          left: 0,
+          top: 0,
+          willChange: "transform",
         }}
       />
       <div
+        ref={cursorInnerRef}
         className="fixed w-2 h-2 rounded-full bg-accent pointer-events-none z-[9999]"
         style={{
-          left: `${position.x}px`,
-          top: `${position.y}px`,
-          transform: "translate(-50%, -50%)",
+          left: 0,
+          top: 0,
+          willChange: "transform",
         }}
       />
     </>
