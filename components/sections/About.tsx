@@ -20,30 +20,7 @@ import {
 export const About = () => {
   const [activeService, setActiveService] = useState<string>("frontend");
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
-  const [orbitProgress, setOrbitProgress] = useState(0);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // Mouse tracking for parallax effects
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Orbital animation
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const updateOrbit = () => {
-      setOrbitProgress((prev) => (prev + 0.001) % 1);
-      animationFrameId = requestAnimationFrame(updateOrbit);
-    };
-
-    animationFrameId = requestAnimationFrame(updateOrbit);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  // orbital progress handled via CSS animations now
 
   const containerRef = useCallback((node: HTMLDivElement) => {
     if (node !== null) {
@@ -188,13 +165,7 @@ export const About = () => {
     document.body.removeChild(tempSvg);
   }, [activeService, containerSize, getCoords]);
 
-  // Parallax effect for background elements
-  const parallaxStyle = {
-    transform: `translate(${mousePosition.x * 0.02}px, ${
-      mousePosition.y * 0.02
-    }px)`,
-    willChange: "transform",
-  };
+  // parallax removed to avoid constant re-renders; keep subtle CSS-driven motion
 
   return (
     <section
@@ -206,21 +177,20 @@ export const About = () => {
         {/* Animated Gradient Orbs */}
         <motion.div
           className="absolute top-20 left-4 sm:left-10 w-32 sm:w-48 lg:w-72 h-32 sm:h-48 lg:h-72 bg-purple-500/20 rounded-full blur-3xl animate-float-rotate"
-          style={parallaxStyle}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
         />
         <motion.div
           className="absolute top-40 right-4 sm:right-10 w-40 sm:w-64 lg:w-96 h-40 sm:h-64 lg:h-96 bg-blue-500/20 rounded-full blur-3xl animate-float"
-          style={{ ...parallaxStyle, animationDelay: "2s" }}
+          style={{ animationDelay: "2s" }}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
         />
         <motion.div
           className="absolute bottom-20 left-1/4 w-32 sm:w-48 lg:w-80 h-32 sm:h-48 lg:h-80 bg-emerald-500/20 rounded-full blur-3xl animate-float-rotate"
-          style={{ ...parallaxStyle, animationDelay: "4s" }}
+          style={{ animationDelay: "4s" }}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1, duration: 1.5, ease: "easeOut" }}
@@ -372,13 +342,13 @@ export const About = () => {
               </div>
 
               {/* Floating Service Icons with Orbital Motion */}
-              {services.map((service) => (
+              {services.map((service, idx) => (
                 <FloatingServiceIcon
                   key={service.id}
                   service={service}
+                  index={idx}
                   isActive={activeService === service.id}
                   onClick={() => setActiveService(service.id)}
-                  orbitProgress={orbitProgress * service.orbitSpeed}
                 />
               ))}
 
@@ -457,9 +427,10 @@ export const About = () => {
                 onClick={() => setActiveService(service.id)}
                 className={`
                   w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-500
-                  ${activeService === service.id
-                    ? "bg-accent scale-125 shadow-lg shadow-accent/50"
-                    : "bg-border hover:bg-accent/50 hover:scale-110"
+                  ${
+                    activeService === service.id
+                      ? "bg-accent scale-125 shadow-lg shadow-accent/50"
+                      : "bg-border hover:bg-accent/50 hover:scale-110"
                   }
                 `}
                 initial={{ opacity: 0, y: 10 }}

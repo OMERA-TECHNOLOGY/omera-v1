@@ -1,11 +1,12 @@
 "use client";
 
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Zap } from "lucide-react";
 import { Service } from "./constants";
 
-export const ServiceCard = ({
+const ServiceCardInner = ({
   service,
   isActive,
 }: {
@@ -144,3 +145,7 @@ export const ServiceCard = ({
     </AnimatePresence>
   );
 };
+
+export const ServiceCard = React.memo(ServiceCardInner, (prev, next) => {
+  return prev.isActive === next.isActive && prev.service.id === next.service.id;
+});

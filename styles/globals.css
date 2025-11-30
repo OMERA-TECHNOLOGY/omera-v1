@@ -139,3 +139,49 @@ html {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================
+   PERFORMANCE KEYFRAMES & UTILITIES
+============================ */
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+.orbit-rotator {
+  display: block;
+  transform-origin: 50% 50%;
+  animation-name: orbit;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.orbit-item {
+  will-change: transform;
+}
