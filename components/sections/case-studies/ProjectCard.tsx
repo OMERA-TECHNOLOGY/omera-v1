@@ -103,10 +103,10 @@ export const ProjectCard = ({
         {/* Image Section */}
         <div className="relative h-48 overflow-hidden rounded-t-3xl">
           <div
-            className={`absolute inset-0 bg-gradient-to-br ${project.gradient} dark:${project.darkGradient} opacity-60 transition-opacity duration-500`}
+            className={`absolute inset-0 bg-linear-to-br ${project.gradient} dark:${project.darkGradient} opacity-60 transition-opacity duration-500`}
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
 
           <div className="relative w-full h-full">
             <Image
@@ -138,6 +138,7 @@ export const ProjectCard = ({
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`View Live Demo of ${project.title}`}
               >
                 <Globe className="w-4 h-4" />
               </a>
@@ -151,6 +152,7 @@ export const ProjectCard = ({
                 href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`View Source Code of ${project.title}`}
               >
                 <Github className="w-4 h-4" />
               </a>
@@ -200,7 +202,7 @@ export const ProjectCard = ({
                   key={i}
                   className="flex items-start gap-2 text-xs text-muted-foreground dark:text-muted-foreground/80 group-hover:text-foreground/80 transition-colors duration-300"
                 >
-                  <div className="w-1.5 h-1.5 bg-accent rounded-full mt-1 flex-shrink-0" />
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full mt-1 shrink-0" />
                   <span className="leading-tight">{result}</span>
                 </div>
               ))}
@@ -256,6 +258,7 @@ export const ProjectCard = ({
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`View Live Demo of ${project.title}`}
               >
                 <Eye className="w-4 h-4 mr-2" />
                 View Live
@@ -274,7 +277,7 @@ export const ProjectCard = ({
         }}
         transition={{ duration: 0.5 }}
       >
-        <Badge className="bg-gradient-to-r from-accent to-accent/70 text-primary border-0 shadow-xl font-bold text-sm px-3 py-1.5 rounded-full">
+        <Badge className="bg-linear-to-r from-accent to-accent/70 text-primary border-0 shadow-xl font-bold text-sm px-3 py-1.5 rounded-full">
           +{project.stats.growth}
         </Badge>
       </motion.div>

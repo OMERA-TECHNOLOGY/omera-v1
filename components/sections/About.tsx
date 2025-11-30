@@ -246,7 +246,7 @@ export const About = () => {
             <Sparkles className="w-4 h-4 text-accent animate-pulse-fast" />
           </motion.div>
 
-          <motion.h1
+          <motion.h2
             className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 sm:mb-8 lg:mb-12 tracking-tight"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -259,7 +259,7 @@ export const About = () => {
             <span className="bg-gradient-to-r from-accent via-accent/90 to-accent/70 bg-clip-text text-transparent animate-gradient-shift bg-[length:200%_200%]">
               INNOVATION
             </span>
-          </motion.h1>
+          </motion.h2>
 
           <motion.p
             className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto leading-relaxed font-light mb-8 sm:mb-12 lg:mb-16"
@@ -280,14 +280,14 @@ export const About = () => {
         {/* Enhanced Interactive Services Section */}
         <div className="relative mb-20 sm:mb-28 lg:mb-36">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-            <motion.h2
+            <motion.h3
               className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 sm:mb-6 lg:mb-8 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
               Our Services
-            </motion.h2>
+            </motion.h3>
             <motion.p
               className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-xl sm:max-w-2xl mx-auto font-light"
               initial={{ opacity: 0, y: -20 }}

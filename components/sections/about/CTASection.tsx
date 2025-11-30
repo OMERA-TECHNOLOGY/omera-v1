@@ -14,7 +14,7 @@ export const CTASection = () => {
       </div>
 
       <motion.div
-        className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 border border-border/20 rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 backdrop-blur-sm overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group"
+        className="relative bg-linear-to-br from-card/90 via-card/80 to-card/70 border border-border/20 rounded-2xl lg:rounded-3xl p-8 sm:p-12 lg:p-16 backdrop-blur-sm overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group"
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: 1.5, duration: 0.7, type: "spring" }}
@@ -40,54 +40,32 @@ export const CTASection = () => {
           </motion.div>
 
           {/* Main Heading */}
-          <motion.h3
-            className="text-2xl sm:text-3xl lg:text-4xl font-black mb-4 sm:mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.5 }}
-          >
-            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              Ready to Build
+          <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground mb-6 sm:mb-8 lg:mb-10 leading-tight">
+            Ready to Transform Your <br className="hidden sm:block" />
+            <span className="bg-linear-to-r from-accent to-purple-600 bg-clip-text text-transparent">
+              Digital Presence?
             </span>
-            <br />
-            <span className="bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">
-              Something Amazing?
-            </span>
-          </motion.h3>
+          </h3>
 
-          {/* Description */}
-          <motion.p
-            className="text-base sm:text-lg text-muted-foreground mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.9, duration: 0.5 }}
-          >
-            Your vision + our expertise ={" "}
-            <span className="text-accent font-semibold">
-              digital excellence
-            </span>
-            . Let's make it happen.
-          </motion.p>
-
-          {/* Optimized CTA Buttons Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto">
+          {/* Buttons Container */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 lg:gap-8 relative z-20">
             {/* Primary CTA */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.0, duration: 0.5 }}
+              transition={{ delay: 1.9, duration: 0.5 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <Button
                 size="lg"
-                className="group relative bg-accent hover:bg-accent/90 text-primary font-bold px-6 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 text-base h-auto min-h-[70px]"
+                className="group relative bg-accent hover:bg-accent/90 text-white px-8 py-6 rounded-xl text-lg font-bold shadow-lg shadow-accent/25 hover:shadow-accent/40 transition-all duration-300 h-auto min-h-[70px] min-w-[200px]"
               >
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2">
-                    <Target className="w-5 h-5" />
-                    <span className="font-bold">Start Project</span>
-                    <Rocket className="w-5 h-5" />
+                    <Rocket className="w-6 h-6" />
+                    <span>Start Project</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </div>
                   <span className="text-xs font-medium text-primary/80">
                     Free Consultation

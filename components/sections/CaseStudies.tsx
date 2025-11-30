@@ -24,7 +24,7 @@ export const CaseStudies = () => {
         <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-emerald-500/10 dark:bg-emerald-400/5 rounded-full blur-3xl" />
 
         {/* Static Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-size-[64px_64px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -38,17 +38,17 @@ export const CaseStudies = () => {
         >
           <Badge
             variant="secondary"
-            className="mb-6 px-4 py-2 bg-gradient-to-r from-accent/20 to-accent/10 text-accent border-accent/30 hover:from-accent/30 hover:to-accent/20 transition-all duration-300 text-sm font-semibold"
+            className="mb-6 px-4 py-2 bg-linear-to-r from-accent/20 to-accent/10 text-accent border-accent/30 hover:from-accent/30 hover:to-accent/20 transition-all duration-300 text-sm font-semibold"
           >
             <TrendingUp className="w-4 h-4 mr-2" />
             Project Orbit
           </Badge>
 
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <span className="bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
               Our Previous
             </span>
-            <span className="block bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">
+            <span className="block bg-linear-to-r from-accent to-accent/70 bg-clip-text text-transparent">
               Clients
             </span>
           </h2>

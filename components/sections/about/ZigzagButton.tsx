@@ -13,7 +13,7 @@ export const ZigzagButton = ({ service, isActive, onClick }: ZigzagButtonProps) 
   return (
     <motion.button
       onClick={onClick}
-      size="lg"
+      aria-label={`Select ${service.title}`}
       className={`
         absolute transform cursor-pointer group
         ${

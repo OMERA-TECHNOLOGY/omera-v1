@@ -136,6 +136,8 @@ export const WhyChoose = () => {
               <CanvasRevealEffect
                 animationSpeed={5.1}
                 containerClassName="bg-emerald-900 rounded-3xl overflow-hidden"
+                maxFps={30}
+                dpr={1}
               />
             </ProcessCard>
             <ProcessCard
@@ -155,8 +157,10 @@ export const WhyChoose = () => {
                   [232, 121, 249],
                 ]}
                 dotSize={2}
+                maxFps={30}
+                dpr={1}
               />
-              <div className="absolute inset-0 [mask-image:radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" />
+              <div className="absolute inset-0 mask-[radial-gradient(400px_at_center,white,transparent)] bg-black/50 dark:bg-black/90" />
             </ProcessCard>
             <ProcessCard
               title="Development & Launch"
@@ -169,6 +173,8 @@ export const WhyChoose = () => {
                 animationSpeed={3}
                 containerClassName="bg-sky-600"
                 colors={[[125, 211, 252]]}
+                maxFps={30}
+                dpr={1}
               />
             </ProcessCard>
             <ProcessCard
@@ -179,6 +185,8 @@ export const WhyChoose = () => {
               <CanvasRevealEffect
                 animationSpeed={5.1}
                 containerClassName="bg-purple-900 rounded-3xl overflow-hidden"
+                maxFps={30}
+                dpr={1}
               />
             </ProcessCard>
           </motion.div>
@@ -187,7 +195,7 @@ export const WhyChoose = () => {
 
       {/* Quote Section */}
       <motion.div
-        className="mt-16 p-12 bg-gradient-to-r from-[#0A1A35] to-[#162947] dark:from-[#FFB32C] dark:to-[#E69500] rounded-3xl text-center text-white dark:text-[#0A1A35] relative overflow-hidden"
+        className="mt-16 p-12 bg-linear-to-r from-[#0A1A35] to-[#162947] dark:from-[#FFB32C] dark:to-[#E69500] rounded-3xl text-center text-white dark:text-[#0A1A35] relative overflow-hidden"
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7 }}

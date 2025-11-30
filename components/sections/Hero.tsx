@@ -95,7 +95,7 @@ export const Hero = () => {
               <span className="text-foreground">Tech</span>
               <br />
               <motion.span
-                className="bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent"
+                className="bg-linear-to-r from-accent to-accent/80 bg-clip-text text-transparent"
                 variants={itemVariants}
               >
                 Solutions

@@ -8,8 +8,8 @@ import { fadeInUp } from "./constants";
 export const CTASection = () => {
   return (
     <motion.div variants={fadeInUp} className="text-center">
-      <div className="bg-gradient-to-br from-accent/5 to-purple-500/5 dark:from-accent/10 dark:to-purple-500/10 border border-border/50 dark:border-border/30 rounded-3xl p-8 lg:p-12 backdrop-blur-md">
-        <h3 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
+      <div className="bg-linear-to-br from-accent/5 to-purple-500/5 dark:from-accent/10 dark:to-purple-500/10 border border-border/50 dark:border-border/30 rounded-3xl p-8 lg:p-12 backdrop-blur-md">
+        <h3 className="text-3xl lg:text-4xl font-bold mb-4 bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
           Ready to launch your next big idea?
         </h3>
         <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto font-light">

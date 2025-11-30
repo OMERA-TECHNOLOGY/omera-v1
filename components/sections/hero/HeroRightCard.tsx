@@ -17,18 +17,19 @@ export const HeroRightCard = () => {
       variants={cardVariants}
     >
       <motion.div
-        className="relative bg-gradient-to-br from-card to-card/80 border border-border/50 rounded-3xl p-8 shadow-2xl backdrop-blur-sm"
+        className="relative bg-linear-to-br from-card to-card/80 border border-border/50 rounded-3xl p-8 shadow-2xl backdrop-blur-sm"
         whileHover={{
           y: -5,
           transition: { type: "spring", stiffness: 300, damping: 20 },
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-accent/10 to-purple-500/5 rounded-3xl blur-xl -z-10" />
+        <div className="absolute inset-0 bg-linear-to-r from-accent/10 to-purple-500/5 rounded-3xl blur-xl -z-10" />
 
         {/* Window Controls */}
         <motion.div
           className="flex items-center justify-between mb-8"
           variants={containerVariants}
+          aria-hidden="true"
         >
           <div className="flex gap-2">
             {["bg-red-400/80", "bg-yellow-400/80", "bg-green-400/80"].map(
@@ -49,6 +50,7 @@ export const HeroRightCard = () => {
                 className="px-3 py-1 text-xs rounded-md transition-all duration-200 hover:bg-background/50"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                tabIndex={-1}
               >
                 {tab}
               </motion.button>
@@ -213,7 +215,7 @@ export const HeroRightCard = () => {
 
         {/* Live Badge */}
         <motion.div
-          className="absolute -top-3 -right-3 bg-gradient-to-r from-accent to-purple-500 text-primary text-xs font-bold px-3 py-1 rounded-full shadow-lg"
+          className="absolute -top-3 -right-3 bg-linear-to-r from-accent to-purple-500 text-primary text-xs font-bold px-3 py-1 rounded-full shadow-lg"
           variants={floatingVariants}
           animate="animate"
         >
@@ -248,7 +250,10 @@ export const HeroRightCard = () => {
       </motion.div>
 
       {/* Animated Background Rings */}
-      <motion.div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80">
+      <motion.div
+        className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80"
+        aria-hidden="true"
+      >
         <motion.div
           className="absolute inset-0 border-2 border-accent/20 rounded-full"
           animate={{

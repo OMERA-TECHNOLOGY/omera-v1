@@ -7,7 +7,7 @@ import { fadeInUp, itemAnimation } from "./constants";
 export const StatsSection = () => {
   return (
     <motion.div variants={fadeInUp} className="relative">
-      <div className="relative bg-gradient-to-br from-background/70 to-background/30 dark:from-background/80 dark:to-background/50 backdrop-blur-2xl border border-border/50 dark:border-border/30 rounded-3xl p-8 lg:p-12 overflow-hidden">
+      <div className="relative bg-linear-to-br from-background/70 to-background/30 dark:from-background/80 dark:to-background/50 backdrop-blur-2xl border border-border/50 dark:border-border/30 rounded-3xl p-8 lg:p-12 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.15),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center relative z-10">
